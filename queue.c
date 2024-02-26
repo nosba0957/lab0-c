@@ -108,13 +108,14 @@ bool q_delete_mid(struct list_head *head)
 {
     if (!head)
         return false;
-    struct list_head **indir = &head;
+    struct list_head **indir = &head->next;
 
-    for (struct list_head *fast = head; fast != head && fast->next != head;
-         fast = fast->next->next)
+    for (struct list_head *fast = head->next;
+         fast != head && fast->next != head; fast = fast->next->next)
         indir = &(*indir)->next;
-    list_del(*indir);
-    q_release_element(list_entry(*indir, element_t, list));
+    struct list_head *del = *indir;
+    list_del(del);
+    q_release_element(list_entry(del, element_t, list));
     return true;
 }
 
